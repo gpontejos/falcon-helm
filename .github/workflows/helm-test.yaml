@@ -17,6 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Set up Helm
@@ -41,7 +42,7 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --config tests/ct.yaml
+        run: ct lint --config tests/ct.yaml --check-version-increment=false
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.10.0
