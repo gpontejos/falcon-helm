@@ -26,7 +26,17 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Chart version bump check
+        id: chart_version_check
+        run: |
+          if git diff HEAD^ HEAD -- helm-charts/*/Chart.yaml | grep -qE '^\+version: [0-9]+\.[0-9]+\.[0-9]$'; then
+            echo "RELEASE=true" >> $GITHUB_ENV
+          else
+            echo "RELEASE=false" >> $GITHUB_ENV
+          fi
+
       - name: Run chart-releaser
+        if: env.RELEASE == 'true'
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: helm-charts
