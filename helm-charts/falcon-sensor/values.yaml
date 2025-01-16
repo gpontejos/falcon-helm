@@ -1,7 +1,7 @@
 # Default values for falcon-sensor.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+# Adding comment
 node:
   # When enabled, Helm chart deploys the Falcon Sensors to Kubernetes nodes
   enabled: true
