@@ -1,7 +1,4 @@
-repositoryID: 4bf7aa02-416b-4035-bdb6-246dc968d559
+repositoryID: 8a7fda6e-508f-4cc5-8887-dd7054c6b71c
 owners:
-  - name: CrowdStrike Solutions Architecture
+  - name: Crowdstrike Solutions Architecture
     email: integrations@crowdstrike.com
-ignore:
-  - name: falcon-kac
-    version: .*rc.*
