@@ -138,6 +138,13 @@ helm show values crowdstrike/falcon-sensor
 
 ## Installing in Kubernetes Cluster as a Sidecar
 
+## Helm Chart Support for Falcon Container Sensor
+
+| Helm chart Version      | Falcon Container Sensor Version                |
+|:------------------------|:-----------------------------------------------|
+| `< 1.30.x`              | `< 7.24.x`                                     |
+| `>= 1.31.x`             | `>= 7.24.x`                                    |
+
 ### Deployment Considerations
 
 To ensure a successful deployment, you will want to ensure that:

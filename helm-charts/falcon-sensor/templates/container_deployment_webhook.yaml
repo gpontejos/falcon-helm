@@ -96,6 +96,7 @@ spec:
                 operator: In
                 values:
                 - amd64
+                - arm64
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
