@@ -1,33 +1,91 @@
 package template_test
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/gruntwork-io/terratest/modules/helm"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 )
 
-func TestDaemonsetTemplateRender(t *testing.T) {
-	releaseName := "test-release"
-	helmChartPath := "../../../falcon-sensor"
+func TestDaemonsetImageManagement(t *testing.T) {
+	values := map[string]string{
+		"falcon.cid":            cid,
+		"node.image.digest":     imageDigest,
+		"node.image.repository": repository,
+	}
 	options := &helm.Options{
-		SetValues: map[string]string{"falcon.cid": cid},
+		SetValues: values,
 	}
 
 	output := helm.RenderTemplate(
-		t, options, helmChartPath, releaseName,
-		[]string{"templates/configmap.yaml"})
+		t, options, sensorChartPath, releaseName,
+		[]string{"templates/daemonset.yaml"})
 
-	var configMap corev1.ConfigMap
-	helm.UnmarshalK8SYaml(t, output, &configMap)
-	t.Logf("configMap: %v", configMap)
-	// expectedContainerImage := "nginx:1.15.8"
-	// podContainers := configMap.Spec.Containers
-	// if podContainers[0].Image != expectedContainerImage {
-	// 	t.Fatalf(
-	// 		"Rendered container image (%s) is not expected (%s)",
-	// 		podContainers[0].Image,
-	// 		expectedContainerImage,
-	// 	)
-	// }
+	var daemonset appsv1.DaemonSet
+	helm.UnmarshalK8SYaml(t, output, &daemonset)
+
+	want := fmt.Sprintf("%s@%s", repository, imageDigest)
+	got := daemonset.Spec.Template.Spec.Containers[0].Image
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Mismatch when using image digest (-want +got): %s", diff)
+	}
+}
+
+func TestDaemonsetAutopilotEnabled(t *testing.T) {
+	values := map[string]string{
+		"falcon.cid":         cid,
+		"node.gke.autopilot": "true",
+	}
+	options := &helm.Options{
+		SetValues: values,
+	}
+
+	output := helm.RenderTemplate(
+		t, options, sensorChartPath, releaseName,
+		[]string{"templates/daemonset.yaml"})
+
+	var daemonset appsv1.DaemonSet
+	helm.UnmarshalK8SYaml(t, output, &daemonset)
+
+	fmt.Sprintf("%v", daemonset)
+	want := &corev1.Capabilities{
+		Add: []corev1.Capability{
+			"SYS_ADMIN",
+			"SYS_PTRACE",
+			"SYS_CHROOT",
+			"DAC_READ_SEARCH",
+		},
+	}
+
+	got := daemonset.Spec.Template.Spec.InitContainers[0].SecurityContext.Capabilities
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("GKE Autopilot Init Container security context capabilities mismatch (-want +got): %s", diff)
+	}
+
+	want = &corev1.Capabilities{
+		Add: []corev1.Capability{
+			"SYS_ADMIN",
+			"SETGID",
+			"SETUID",
+			"SYS_PTRACE",
+			"SYS_CHROOT",
+			"DAC_OVERRIDE",
+			"SETPCAP",
+			"DAC_READ_SEARCH",
+			"BPF",
+			"PERFMON",
+			"SYS_RESOURCE",
+			"NET_RAW",
+			"CHOWN",
+			"NET_ADMIN",
+		},
+	}
+
+	got = daemonset.Spec.Template.Spec.Containers[0].SecurityContext.Capabilities
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("GKE Autopilot Sensor Container security context capabilities mismatch (-want +got): %s", diff)
+	}
 }
