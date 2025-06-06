@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
         "image": {
@@ -462,7 +462,14 @@
             "then": {
                 "properties": {
                     "falconSecret": {
-                        "required": ["secretName"]
+                        "required": ["secretName"],
+                        "properties": {
+                            "secretName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "not": { "enum": [null] }
+                            }
+                        }
                     }
                 }
             },
@@ -483,8 +490,7 @@
                     "falcon": {
                         "required": ["cid"]
                     }
-                },
-                "errorMessage": "falcon.cid is required when falconSecret.enabled is false"
+                }
             }
         },
         {
@@ -520,8 +526,7 @@
                 ]
             },
             "then": {
-                "const": "force_failure",
-                "errorMessage": "When falconSecret.enabled is false, falcon.cid must be provided and cannot be empty"
+                "const": "When falconSecret.enabled is false, falcon.cid must be provided and cannot be empty"
             }
         }
     ]
