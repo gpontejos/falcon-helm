@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
     "type": "object",
     "properties": {
         "image": {
@@ -96,13 +96,6 @@
         "falcon": {
             "type": "object",
             "properties": {
-                "cid": {
-                    "type": "string",
-                    "pattern": "^[0-9a-fA-F]{32}-[0-9a-fA-F]{2}$",
-                    "example": [
-                        "1234567890ABCDEF1234567890ABCDEF-12"
-                    ]
-                },
                 "trace": {
                     "type": [
                         "null",
@@ -425,42 +418,110 @@
             }
         }
     },
-    "oneOf": [
+    "allOf": [
         {
-            "properties": {
-                "falcon": {
-                    "properties": {
-                        "cid": {
-                            "type": "string",
-                            "minLength": 1
+            "if": {
+                "properties": {
+                    "falcon": {
+                        "properties": {
+                            "cid": {
+                                "not": { "type": "null" }
+                            }
                         }
-                    },
-                    "required": ["cid"]
+                    }
                 }
             },
-            "required": ["falcon"]
+            "then": {
+                "properties": {
+                    "falcon": {
+                        "properties": {
+                            "cid": {
+                                "type": "string",
+                                "pattern": "^[0-9a-fA-F]{32}-[0-9a-fA-F]{2}$",
+                                "example": [
+                                    "1234567890ABCDEF1234567890ABCDEF-12"
+                                ]
+                            }
+                        },
+                        "required": ["cid"]
+                    }
+                },
+                "required": ["falcon"]
+            }
         },
         {
-            "properties": {
+            "if": {
+                "properties": {
                 "falconSecret": {
                     "properties": {
-                        "enabled": { "enum": [true] },
-                        "secretName": {
-                            "type": "string",
-                            "minLength": 1
-                        }
-                    },
-                    "required": ["enabled", "secretName"]
+                        "enabled": { "enum": [true] }
+                    }
+                }
                 }
             },
-            "required": ["falconSecret"],
-            "not": {
+            "then": {
+                "properties": {
+                    "falconSecret": {
+                        "required": ["secretName"]
+                    }
+                }
+            },
+            "errorMessage": "secretName is required when falconSecret.enabled is true"
+        },
+        {
+            "if": {
+                "properties": {
+                    "falconSecret": {
+                        "properties": {
+                        "enabled": { "enum": [false] }
+                        }
+                    }
+                }
+            },
+            "then": {
                 "properties": {
                     "falcon": {
                         "required": ["cid"]
                     }
                 },
-                "required": ["falcon"]
+                "errorMessage": "falcon.cid is required when falconSecret.enabled is false"
+            }
+        },
+        {
+            "if": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "falconSecret": {
+                                "properties": {
+                                    "enabled": { "enum": [false] }
+                                    },
+                                "required": ["enabled"]
+                            }
+                        },
+                        "required": ["falconSecret"]
+                    },
+                    {
+                        "properties": {
+                            "falcon": {
+                                "properties": {
+                                    "cid": {
+                                        "anyOf": [
+                                            { "type": "null" },
+                                            { "type": "string", "maxLength": 0 }
+                                        ]
+                                    }
+                                },
+                                "required": ["cid"]
+                            }
+                        },
+                        "required": ["falcon"]
+                    }
+                ]
+            },
+            "then": {
+                "const": "force_failure",
+                "errorMessage": "When falconSecret.enabled is false, falcon.cid must be provided and cannot be empty"
             }
         }
     ]
