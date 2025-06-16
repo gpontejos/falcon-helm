@@ -7,17 +7,12 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: "{{ include "falcon-sensor.name" . }}"
-    app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "falcon-sensor.labels" . | nindent 4 }}
     {{- if .Values.container.enabled }}
     app.kubernetes.io/component: "container_sensor"
     {{ else if .Values.node.enabled }}
     app.kubernetes.io/component: "kernel_sensor"
     {{ end -}}
-    crowdstrike.com/provider: crowdstrike
-    helm.sh/chart: {{ include "falcon-sensor.chart" . }}
-
 data:
   {{- if not .Values.falconSecret.enabled }}
   FALCONCTL_OPT_CID: {{ .Values.falcon.cid }}

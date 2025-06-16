@@ -5,12 +5,8 @@ metadata:
   name: {{ include "falcon-sensor.fullname" . }}
   labels:
     app: "{{ include "falcon-sensor.name" . }}"
-    app.kubernetes.io/name: {{ include "falcon-sensor.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "falcon-sensor.labels" . | nindent 4 }}
     app.kubernetes.io/component: "kernel_sensor"
-    crowdstrike.com/provider: crowdstrike
-    helm.sh/chart: {{ include "falcon-sensor.chart" . }}
     {{- if .Values.node.daemonset.labels }}
     {{- range $key, $value := .Values.node.daemonset.labels }}
     {{ $key }}: {{ $value | quote }}

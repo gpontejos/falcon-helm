@@ -32,6 +32,12 @@ Create chart name and version as used by the chart label.
 
 {{/*
 Common labels
+helm.sh/chart
+app.kubernetes.io/name
+app.kubernetes.io/instance
+app.kubernetes.io/version
+app.kubernetes.io/managed-by
+crowdstrike.com/provider
 */}}
 {{- define "falcon-sensor.labels" -}}
 helm.sh/chart: {{ include "falcon-sensor.chart" . }}
@@ -40,6 +46,7 @@ helm.sh/chart: {{ include "falcon-sensor.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+crowdstrike.com/provider: crowdstrike
 {{- end }}
 
 {{/*
