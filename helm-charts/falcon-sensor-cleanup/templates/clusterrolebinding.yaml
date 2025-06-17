@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "falcon-sensor-cleanup.fullname" . }}-access-binding
+  labels:
+    app: {{ include "falcon-sensor-cleanup.name" . }}
+    app.kubernetes.io/name: {{ include "falcon-sensor-cleanup.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: "kernel_sensor"
+    crowdstrike.com/provider: crowdstrike
+    helm.sh/chart: {{ include "falcon-sensor-cleanup.chart" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "falcon-sensor-cleanup.fullname" . }}-access-role
+  apiGroup: rbac.authorization.k8s.io

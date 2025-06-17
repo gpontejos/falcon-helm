@@ -108,6 +108,9 @@ node:
     postDelete:
       enabled: true
 
+  # Enable if you wnat to run the cleanup daemonset only
+  cleanupOnly: false
+
 container:
   # When enabled, Helm chart deploys the Falcon Container Sensor to Pods through Webhooks
   enabled: false

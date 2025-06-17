@@ -1,0 +1,3 @@
+Thank you for installing the CrowdStrike Falcon Helm Chart!
+
+TBD add some stuff about what the cleanup chart does

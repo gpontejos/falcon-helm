@@ -1,0 +1,86 @@
+# Default values for falcon-sensor-cleanup.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Enable for use on Google's GKE Autopilot clusters
+# cleanupAllowListVersion - specify the version of the workload allowlist to use for the cleanup daemonset
+gke:
+  autopilot: false
+  # cleanupAllowListVersion: ""
+
+# Annotations to apply to the daemonset
+annotations: {}
+
+# The key that is used to handle enabling/disabling sensor injection at the pod/node level
+podAnnotationKey: sensor.falcon-system.crowdstrike.com/injection
+
+# additionals labels
+labels: {}
+
+tolerations:
+  # We want to schedule on control plane nodes where they are accessible
+  - key: "node-role.kubernetes.io/master"
+    operator: "Exists"
+    effect: "NoSchedule"
+  # Future taint for K8s >=1.24
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "kubernetes.azure.com/scalesetpriority"
+    operator: "Equal"
+    value: "spot"
+    effect: "NoSchedule"
+  # Daemonsets automatically get additional tolerations: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+
+# https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+# Allow setting additional node selections e.g. processor type
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: kubernetes.io/arch
+#         operator: In
+#         values:
+#         - amd64
+nodeAffinity: {}
+
+# Resource settings that can be set with backend is set to bpf only. Cannot be used when backend is set to kernel.
+# This will be ignored if backend is set to kernel. Purposefully. The defaults are set to the minimum requirements.
+# Depending on the size of your cluster and the node types, you may need to increase these values.
+# resources:
+#   limits:
+#     cpu: 250m
+#     ephemeral-storage: 100Mi
+#     memory: 500Mi
+#   requests:
+#     cpu: 250m
+#     ephemeral-storage: 100Mi
+#     memory: 500Mi
+
+image:
+  repository: falcon-node-sensor
+  pullPolicy: Always
+  pullSecrets:
+  # Overrides the image tag. In general, tags should not be used (including semver tags or `latest`). This variable is provided for those
+  # who have yet to move off of using tags. The sha256 digest should be used in place of tags for increased security and image immutability.
+  tag: "latest"
+  # Setting a digest will override any tag and should be used instead of tags.
+  #
+  # Example digest variable configuration:
+  # digest: sha256:ffdc91f66ef8570bd7612cf19145563a787f552656f5eec43cd80ef9caca0398
+  digest:
+
+  # Value must be base64. This setting conflicts with node.image.pullSecrets
+  # The base64 encoded string of the docker config json for the pull secret can be
+  # gotten through:
+  # $ cat ~/.docker/config.json | base64 -
+  registryConfigJSON:
+
+podAnnotations: {}
+
+# How long to wait for Falcon pods to stop gracefully
+terminationGracePeriod: 60
+
+serviceAccount:
+  name: crowdstrike-falcon-cleanup-sa
+  annotations: {}
