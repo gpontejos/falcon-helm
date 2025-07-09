@@ -497,6 +497,32 @@ entries:
     version: 0.1.1
   falcon-kac:
   - apiVersion: v2
+    appVersion: 1.4.0
+    created: "2025-07-09T21:14:41.435688692Z"
+    description: A Helm chart to deploy CrowdStrike Falcon Kubernetes Admission Controller.
+    digest: 95aeb403a7555e502200c7e4e10d3d93b59d25f1fef2b93e60f601866bd2a9d4
+    home: https://crowdstrike.com
+    icon: https://raw.githubusercontent.com/CrowdStrike/falcon-helm/main/images/crowdstrike-logo.svg
+    keywords:
+    - CrowdStrike
+    - Falcon
+    - EDR
+    - kubernetes
+    - security
+    - monitoring
+    - alerting
+    kubeVersion: '>1.21.0-0'
+    maintainers:
+    - email: integrations@crowdstrike.com
+      name: CrowdStrike Deployment Engineering
+    name: falcon-kac
+    sources:
+    - https://github.com/CrowdStrike/falcon-helm
+    type: application
+    urls:
+    - https://github.com/gpontejos/falcon-helm/releases/download/falcon-kac-1.4.0/falcon-kac-1.4.0.tgz
+    version: 1.4.0
+  - apiVersion: v2
     appVersion: 1.3.0-rc
     created: "2025-05-27T17:39:55.417470212Z"
     description: A Helm chart to deploy CrowdStrike Falcon Kubernetes Admission Controller.
@@ -862,6 +888,16 @@ entries:
     version: 1.0.0
   falcon-self-hosted-registry-assessment:
   - apiVersion: v2
+    appVersion: 1.5.1
+    created: "2025-07-09T21:14:41.650824869Z"
+    description: CrowdStrike Self-hosted Registry Assessment
+    digest: c9fad26edb04debef45635b3a519fb3723d379b104033c19e6db2036c83bd450
+    name: falcon-self-hosted-registry-assessment
+    type: application
+    urls:
+    - https://github.com/gpontejos/falcon-helm/releases/download/falcon-self-hosted-registry-assessment-1.5.1/falcon-self-hosted-registry-assessment-1.5.1.tgz
+    version: 1.5.1
+  - apiVersion: v2
     appVersion: 1.5.0
     created: "2025-05-27T17:39:55.545121381Z"
     description: CrowdStrike Self-hosted Registry Assessment
@@ -922,6 +958,33 @@ entries:
     - https://github.com/CrowdStrike/falcon-helm/releases/download/falcon-self-hosted-registry-assessment-0.2.0/falcon-self-hosted-registry-assessment-0.2.0.tgz
     version: 0.2.0
   falcon-sensor:
+  - apiVersion: v2
+    appVersion: 1.32.0
+    created: "2025-07-09T21:14:41.83548952Z"
+    description: A Helm chart to deploy CrowdStrike Falcon sensors into Kubernetes
+      clusters.
+    digest: 7f1fb15c5cf1ef0434e72ce60f1b1368485083bc805bcfecccb6dd281fcf45a6
+    home: https://crowdstrike.com
+    icon: https://raw.githubusercontent.com/CrowdStrike/falcon-helm/main/images/crowdstrike-logo.svg
+    keywords:
+    - CrowdStrike
+    - Falcon
+    - EDR
+    - kubernetes
+    - security
+    - monitoring
+    - alerting
+    kubeVersion: '>1.22.0-0'
+    maintainers:
+    - email: integrations@crowdstrike.com
+      name: CrowdStrike Solutions Architecture
+    name: falcon-sensor
+    sources:
+    - https://github.com/CrowdStrike/falcon-helm
+    type: application
+    urls:
+    - https://github.com/gpontejos/falcon-helm/releases/download/falcon-sensor-1.33.0-rc/falcon-sensor-1.33.0-rc.tgz
+    version: 1.33.0-rc
   - apiVersion: v2
     appVersion: 1.32.0
     created: "2025-05-27T17:39:55.646096402Z"
@@ -3013,4 +3076,4 @@ entries:
     urls:
     - https://github.com/CrowdStrike/falcon-helm/releases/download/registry-scanner-0.1.0/registry-scanner-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-27T17:39:55.646618803Z"
+generated: "2025-07-09T21:14:41.835890334Z"
