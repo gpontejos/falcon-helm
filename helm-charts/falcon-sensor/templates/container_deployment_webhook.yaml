@@ -6,9 +6,13 @@
 {{- end }}
 {{- $certValid := (.Values.container.certExpiration | int) -}}
 {{- $altNames := list ( printf "%s" $fullName ) ( printf "%s.%s.svc" $name .Release.Namespace ) ( printf "%s.%s.svc.cluster.local" $name .Release.Namespace ) ( printf "%s.%s" $name .Release.Namespace ) ( printf "%s" $name ) -}}
-{{- $ca := genCA ( printf "%s ca" .Release.Namespace ) $certValid -}}
-{{- $cert := genSignedCert $fullName nil $altNames $certValid $ca -}}
-{{- if not .Values.container.autoCertificateUpdate }}
+{{- $ca := "" -}}
+{{- $cert := "" -}}
+{{- if or .Release.IsInstall .Values.container.autoCertificateUpdate -}}
+{{- $ca = genCA ( printf "%s ca" .Release.Namespace ) $certValid -}}
+{{- $cert = genSignedCert $fullName nil $altNames $certValid $ca -}}
+{{- end }}
+{{- if and .Release.IsUpgrade (not .Values.container.autoCertificateUpdate) }}
 {{- $tlscrt := (lookup "v1" "Secret" .Release.Namespace (printf "%s-tls" (include "falcon-sensor.name" .))).data -}}
 {{- if kindIs "map" $tlscrt }}
 {{- $cert = dict "Cert" (index $tlscrt "tls.crt" | b64dec ) "Key" (index $tlscrt "tls.key" | b64dec ) -}}
