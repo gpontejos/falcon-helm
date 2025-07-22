@@ -12,18 +12,6 @@
 {{- $ca = genCA ( printf "%s ca" .Release.Namespace ) $certValid -}}
 {{- $cert = genSignedCert $fullName nil $altNames $certValid $ca -}}
 {{- end }}
-{{- if and .Release.IsUpgrade (not .Values.container.autoCertificateUpdate) }}
-{{- $tlscrt := (lookup "v1" "Secret" .Release.Namespace (printf "%s-tls" (include "falcon-sensor.name" .))).data -}}
-{{- if kindIs "map" $tlscrt }}
-{{- $cert = dict "Cert" (index $tlscrt "tls.crt" | b64dec ) "Key" (index $tlscrt "tls.key" | b64dec ) -}}
-{{- end }}
-{{- $tlsca := (lookup "admissionregistration.k8s.io/v1" "MutatingWebhookConfiguration" .Release.Namespace $name).webhooks -}}
-{{- if kindIs "slice" $tlsca }}
-{{- range $index, $wca := $tlsca -}}
-  {{- $ca = dict "Cert" ($wca.clientConfig.caBundle | b64dec) }}
-{{- end }}
-{{- end }}
-{{- end }}
 {{- $tlsCert := $cert.Cert | b64enc }}
 {{- $tlsKey := $cert.Key | b64enc }}
 {{- $caCert := $ca.Cert | b64enc }}
