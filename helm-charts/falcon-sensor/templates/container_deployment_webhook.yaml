@@ -187,7 +187,7 @@ spec:
       volumes:
       - name: {{ include "falcon-sensor.name" . }}-tls-certs
         secret:
-          secretName: {{ include "falcon-sensor.name" . }}-tls
+          secretName: {{ include "falcon-sensor.containerWebhookTlsSecretName" . }}
       {{- if (.Files.Glob "certs/*.crt") }}
       - name: {{ include "falcon-sensor.name" . }}-registry-certs
         configMap:
@@ -210,7 +210,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "falcon-sensor.name" . }}-tls
+  name: {{ include "falcon-sensor.containerWebhookTlsSecretName" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ include "falcon-sensor.name" . }}

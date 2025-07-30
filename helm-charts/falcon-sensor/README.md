@@ -265,6 +265,8 @@ The following tables lists the more common configurable parameters of the chart 
 | `container.alternateMountPath`                   | Enable volume mounts at /falcon instead of /tmp for NVCF environment                                                                    | `false`                                                                                                                                                                                                                                                   |
 | `container.certExpiration`                       | Certificate validity duration in number of days                                                                                         | `3650`                                                                                                                                                                                                                                                    |
 | `container.registryCertSecret`                   | Name of generic Secret with additional CAs for external registries                                                                      | None                                                                                                                                                                                                                                                      |
+| `container.argocd.enabled`                       | Enabled if ArgoCD is being used. [See Deploying the Container Sensor with ArgoCD](#deploying-the-container-sensor-with-argocd)          | `false`                                                                                                                                                                                                                                                   |
+| `container.argocd.tlsSecretName`                 | Name to use for the tls secret                                                                                                          | `falcon-container-secret-tls`                                                                                                                                                                                                                             |
 | `container.image.repository`                     | Falcon Sensor Node registry/image name                                                                                                  | `falcon-sensor`                                                                                                                                                                                                                                           |
 | `container.image.tag`                            | The version of the official image to use.                                                                                               | `latest` (Use container.image.digest instead for security and production.)                                                                                                                                                                                |
 | `container.image.digest`                         | The sha256 digest of the official image to use.                                                                                         | None     (Use instead of image tag for security and production.)                                                                                                                                                                                          |
@@ -289,6 +291,19 @@ helm show values crowdstrike/falcon-sensor
 #### Note about using --set with lists
 
 If you need to provide a list of values to a `--set` command, you need to escape the commas between the values e.g. `--set falcon.tags="tag1\,tag2\,tag3"`
+
+#### Deploying the Container Sensor with ArgoCD
+Due to limitations in ArgoCD when using the `lookup` helm template function, the following will need to be completed to prevent intermittent failures of webhook deployments during Syncs:
+1. Set `container.argocd.enabled` to `true` in the values file.
+2. Add `ignoreDifferences` to the Application or ApplicationSet used to deploy the container sensor:
+   ```
+   ignoreDifferences:
+     - group: ""
+       kind: Secret
+       name: falcon-container-secret-tls
+       jsonPointers:
+         - /data
+   ```
 
 #### Example using container.image.sensorResources
 
