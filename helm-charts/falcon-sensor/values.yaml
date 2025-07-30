@@ -144,6 +144,24 @@ container:
   gcp:
     enabled: false
 
+  argocd:
+    enabled: false
+    # This hardcodes the name of the container webhook secret allowing it to be ignored in ArgoCD.
+    # Example:
+    # apiVersion: argoproj.io/v1alpha1
+    # kind: Application
+    # metadata:
+    #   name: falcon-sidecar
+    #   namespace: argocd
+    # spec:
+    #   ignoreDifferences:
+    #     - group: ""
+    #       kind: Secret
+    #       name: falcon-container-secret-tls
+    #       jsonPointers:
+    #         - /data
+    tlsSecretName: falcon-container-secret-tls
+
   # Enable Network Policies within the Injector namespace to allow ingress
   networkPolicy:
     enabled: false

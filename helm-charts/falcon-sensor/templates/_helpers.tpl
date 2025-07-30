@@ -179,3 +179,15 @@ Create service account name for the cleanup daemonset
 {{- printf "%s-node-cleanup-standalone" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create name for falcon container tls secret if ArgoCD
+Needed to ensure ignoreDifferences can be used in ArgoCD
+*/}}
+{{- define "falcon-sensor.containerWebhookTlsSecretName" -}}
+{{- if not .Values.container.argocd.enabled -}}
+{{- printf "%s-tls" (include "falcon-sensor.name" .) -}}
+{{- else -}}
+{{- printf "%s" .Values.container.argocd.tlsSecretName -}}
+{{- end -}}
+{{- end -}}
