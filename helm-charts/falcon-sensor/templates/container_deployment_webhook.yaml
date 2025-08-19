@@ -172,24 +172,18 @@ spec:
           mountPath: /tmp/CrowdStrike
           readOnly: true
         {{- end }}
-        # readinessProbe:
-        #   httpGet:
-        #     path: /live
-        #     port: {{ .Values.container.injectorPort }}
-        #     scheme: HTTPS
         readinessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - |
-              openssl s_client -connect localhost:4433 \
+              openssl s_client -connect localhost:{{ .Values.container.injectorPort }} \
                 -servername localhost \
                 -CAfile /run/secrets/tls/ca.crt \
                 </dev/null 2>&1 | grep "Verification: OK"
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           periodSeconds: 10
-
         livenessProbe:
           httpGet:
             path: /live
