@@ -78,6 +78,7 @@ node:
 
     # Sets the max unavailable nodes. Default is 1 when no value exists.
     maxUnavailable: 1
+    maxSurge: 1
 
   image:
     repository: falcon-node-sensor

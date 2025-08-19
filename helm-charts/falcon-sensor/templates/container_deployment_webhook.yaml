@@ -54,6 +54,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: {{ .Values.container.maxUnavailable }}
+      maxSurge: {{ .Values.container.maxSurge }}
   selector:
     matchLabels:
       app: {{ include "falcon-sensor.name" . }}-injector
@@ -176,14 +177,14 @@ spec:
                 -servername localhost \
                 -CAfile /run/secrets/tls/ca.crt \
                 </dev/null 2>&1 | grep "Verification: OK"
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 15
         livenessProbe:
           httpGet:
             path: /live
             port: {{ .Values.container.injectorPort }}
             scheme: HTTPS
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 10
         resources:
             {{- toYaml .Values.container.resources | nindent 12 }}
