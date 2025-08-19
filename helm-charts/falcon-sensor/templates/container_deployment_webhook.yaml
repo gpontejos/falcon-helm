@@ -166,13 +166,25 @@ spec:
           mountPath: /tmp/CrowdStrike
           readOnly: true
         {{- end }}
+        # readinessProbe:
+        #   httpGet:
+        #     path: /live
+        #     port: {{ .Values.container.injectorPort }}
+        #     scheme: HTTPS
         readinessProbe:
-          httpGet:
-            path: /live
-            port: {{ .Values.container.injectorPort }}
-            scheme: HTTPS
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - |
+              curl --cacert /etc/certs/ca.crt \
+                  --cert /etc/certs/tls.crt \
+                  --key /etc/certs/tls.key \
+                  -s -o /dev/null -w "%{http_code}" \
+                  https://localhost:{{ .Values.container.injectorPort }}/live | grep -q 200
           initialDelaySeconds: 5
           periodSeconds: 10
+
         livenessProbe:
           httpGet:
             path: /live
