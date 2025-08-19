@@ -183,7 +183,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              /bin/openssl s_client -connect localhost:4433 \
+              openssl s_client -connect localhost:4433 \
                 -servername localhost \
                 -CAfile /run/secrets/tls/ca.crt \
                 </dev/null 2>&1 | grep "Verification: OK"
