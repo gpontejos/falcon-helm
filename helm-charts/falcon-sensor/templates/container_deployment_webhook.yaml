@@ -183,15 +183,10 @@ spec:
             - /bin/sh
             - -c
             - |
-              openssl s_client -connect $POD_IP:{{ .Values.container.injectorPort }} \
+              /bin/openssl s_client -connect $POD_IP:4433 \
                 -servername localhost \
-                -CAfile /run/secrets/tls/ca.crt \
-                </dev/null 2>&1 | grep -q "Verify return code: 0"
-              if [ $? -eq 0 ]; then
-                exit 0
-              else
-                exit 1
-              fi
+                -CAfile /var/run/secrets/tls/ca.crt \
+                </dev/null 2>&1 | grep -q "Verification: OK"
           initialDelaySeconds: 5
           periodSeconds: 10
 
