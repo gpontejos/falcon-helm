@@ -142,6 +142,12 @@ spec:
         image: "{{ include "falcon-sensor.image" . }}"
         imagePullPolicy: "{{ .Values.container.image.pullPolicy }}"
         command: ["injector"]
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        command:
         envFrom:
         - configMapRef:
             name: {{ include "falcon-sensor.configMapName" . }}
@@ -177,10 +183,15 @@ spec:
             - /bin/sh
             - -c
             - |
-              openssl s_client -connect localhost:{{ .Values.container.injectorPort }} \
+              openssl s_client -connect $POD_IP:{{ .Values.container.injectorPort }} \
                 -servername localhost \
-                -CAfile /etc/certs/ca.crt \
+                -CAfile /run/secrets/tls/ca.crt \
                 </dev/null 2>&1 | grep -q "Verify return code: 0"
+              if [ $? -eq 0 ]; then
+                exit 0
+              else
+                exit 1
+              fi
           initialDelaySeconds: 5
           periodSeconds: 10
 
