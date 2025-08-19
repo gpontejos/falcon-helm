@@ -177,8 +177,8 @@ spec:
                 -servername localhost \
                 -CAfile /run/secrets/tls/ca.crt \
                 </dev/null 2>&1 | grep "Verification: OK"
-          initialDelaySeconds: 10
-          periodSeconds: 15
+          initialDelaySeconds: 5
+          periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /live
