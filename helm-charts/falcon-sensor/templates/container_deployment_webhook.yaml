@@ -142,12 +142,6 @@ spec:
         image: "{{ include "falcon-sensor.image" . }}"
         imagePullPolicy: "{{ .Values.container.image.pullPolicy }}"
         command: ["injector"]
-        env:
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        command:
         envFrom:
         - configMapRef:
             name: {{ include "falcon-sensor.configMapName" . }}
