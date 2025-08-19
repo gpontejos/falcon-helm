@@ -117,6 +117,7 @@ container:
 
   # Configure the number of replicas for the mutating webhook backend
   replicas: 2
+  maxUnavailable: 1
 
   # Configure PodTopologySpread constraints to allow pods run on different nodes
   topologySpreadConstraints:
@@ -146,7 +147,8 @@ container:
 
   argocd:
     enabled: false
-    # This hardcodes the name of the container webhook secret allowing it to be ignored in ArgoCD.
+    # This hardcodes the name of the container webhook secret allowing it to be
+    # ignored in ArgoCD using Applications or ApplicationSet.
     # Example:
     # apiVersion: argoproj.io/v1alpha1
     # kind: Application
