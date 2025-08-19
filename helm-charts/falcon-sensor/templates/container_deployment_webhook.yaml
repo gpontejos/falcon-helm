@@ -50,11 +50,11 @@ metadata:
   {{- end }}
 spec:
   replicas: {{ .Values.container.replicas }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: {{ .Values.container.maxUnavailable }}
-      maxSurge: {{ .Values.container.maxSurge }}
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: {{ .Values.container.maxUnavailable }}
+  #     maxSurge: {{ .Values.container.maxSurge }}
   selector:
     matchLabels:
       app: {{ include "falcon-sensor.name" . }}-injector
