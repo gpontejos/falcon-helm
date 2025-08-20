@@ -168,15 +168,19 @@ spec:
           readOnly: true
         {{- end }}
         readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - |
-              openssl s_client -connect localhost:{{ .Values.container.injectorPort }} \
-                -servername localhost \
-                -CAfile /run/secrets/tls/ca.crt \
-                </dev/null 2>&1 | grep "Verification: OK"
+          httpGet:
+              path: /live
+              port: {{ .Values.container.injectorPort }}
+              scheme: HTTPS
+          # exec:
+          #   command:
+          #   - /bin/sh
+          #   - -c
+          #   - |
+          #     openssl s_client -connect localhost:{{ .Values.container.injectorPort }} \
+          #       -servername localhost \
+          #       -CAfile /run/secrets/tls/ca.crt \
+          #       </dev/null 2>&1 | grep "Verification: OK"
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
