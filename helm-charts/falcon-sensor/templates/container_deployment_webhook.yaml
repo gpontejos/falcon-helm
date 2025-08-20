@@ -9,7 +9,7 @@
 {{- $ca := genCA ( printf "%s ca" .Release.Namespace ) $certValid -}}
 {{- $cert := genSignedCert $fullName nil $altNames $certValid $ca -}}
 {{- if not .Values.container.autoCertificateUpdate }}
-{{- $tlscrt := (lookup "v1" "Secret" .Release.Namespace (printf "%s-tls" (include "falcon-sensor.name" .))).data -}}
+{{- $tlscrt := (lookup "v1" "Secret" .Release.Namespace (printf "%s" (include "falcon-sensor.containerWebhookTlsSecretName" .))).data -}}
 {{- if kindIs "map" $tlscrt }}
 {{- $cert = dict "Cert" (index $tlscrt "tls.crt" | b64dec ) "Key" (index $tlscrt "tls.key" | b64dec ) -}}
 {{- end }}
